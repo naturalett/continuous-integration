@@ -15,13 +15,16 @@ def projectNames = [
     "Artifact",
     "Build-And-Test",
     "Clone",
+    "Commit",
+    "Cron",
     "Deployment",
     "Full-Pipeline",
     "Junit-Test",
     "Monitoring",
     "Parallelism",
     "VCS-Any-Agent",
-    "VCS-Docker-Agent"
+    "VCS-Docker-Agent",
+    "Webhook"
 ]
 
 for (projectName in projectNames) {

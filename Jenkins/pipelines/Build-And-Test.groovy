@@ -42,8 +42,7 @@ pipeline {
                 script {
                     dir(applicationDir) {
                         docker.image('python:3.7-slim').inside {
-                            sh """
-                            #!/bin/bash
+                            sh """#!/bin/bash
                             python3 -m venv venv
                             source venv/bin/activate
                             pip install -r requirements.txt

@@ -1,6 +1,7 @@
 FROM jenkins/jenkins:2.387-jdk11
 
 # ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false"
+ENV JAVA_OPTS="-Dpermissive-script-security.enabled=true"
 
 RUN jenkins-plugin-cli --plugins \
   docker-plugin:1.2.10 \
@@ -8,7 +9,8 @@ RUN jenkins-plugin-cli --plugins \
   git:5.0.0 \
   workflow-aggregator:590.v6a_d052e5a_a_b_5 \
   junit junit:1166.va_436e268e972 \
-  github:1.36.1
+  github:1.36.1 \
+  permissive-script-security:0.3
 
 USER root
 

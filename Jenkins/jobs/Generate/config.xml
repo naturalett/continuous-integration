@@ -19,27 +19,29 @@ scm.userRemoteConfigs = scm.createRepoList(sharedLibrariesUrl, null)
 scm.branches = [new BranchSpec(&quot;*/main&quot;)];
 
 def projectNames = [
-  &quot;Artifact&quot;,
-  &quot;Build-And-Test&quot;,
-  &quot;Clone&quot;,
-  &quot;Deployment&quot;,
-  &quot;Full-Pipeline&quot;,
-  &quot;Junit-Test&quot;,
-  &quot;Monitoring&quot;,
-  &quot;Parallelism&quot;,
-  &quot;VCS-Any-Agent&quot;,
-  &quot;VCS-Docker-Agent&quot;
+    &quot;Artifact&quot;,
+    &quot;Build-And-Test&quot;,
+    &quot;Clone&quot;,
+    &quot;Commit&quot;,
+    &quot;Cron&quot;,
+    &quot;Deployment&quot;,
+    &quot;Full-Pipeline&quot;,
+    &quot;Junit-Test&quot;,
+    &quot;Monitoring&quot;,
+    &quot;Parallelism&quot;,
+    &quot;VCS-Any-Agent&quot;,
+    &quot;VCS-Docker-Agent&quot;,
+    &quot;Webhook&quot;
 ]
 
 for (projectName in projectNames) {
-  flowDefinition = new org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition(scm, &quot;Jenkins/pipelines/${projectName}.groovy&quot;)
-  myJob = hudson.model.Hudson.instance.getJob(projectName)
-  println(&quot;${projectName} is being created&quot;)
-  job = new org.jenkinsci.plugins.workflow.job.WorkflowJob(parent, projectName)
-  job.definition = flowDefinition
-  parent.reload()
-}
-</script>
+    flowDefinition = new org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition(scm, &quot;Jenkins/pipelines/${projectName}.groovy&quot;)
+    myJob = hudson.model.Hudson.instance.getJob(projectName)
+    println(&quot;${projectName} is being created&quot;)
+    job = new org.jenkinsci.plugins.workflow.job.WorkflowJob(parent, projectName)
+    job.definition = flowDefinition
+    parent.reload()
+}</script>
     <sandbox>false</sandbox>
   </definition>
   <triggers/>

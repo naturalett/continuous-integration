@@ -19,8 +19,7 @@ pipeline {
             steps {
                 script {
                     docker.image('alpine').inside {
-                        sh ""
-                        "
+                        sh """
                         apk add curl
                         curl http://checkip.amazonaws.com > publicIP""".trim()
                     }

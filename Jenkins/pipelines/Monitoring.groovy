@@ -8,14 +8,22 @@ pipeline {
     agent {
         docker {
             image 'docker:19.03.12'
-            args '-v /var/run/docker.sock:/var/run/docker.sock'
+            args '-v /var/run/docker.sock:/var/run/docker.sock -v /var/workshop-creds:/home'
+        }
+    }
+    stages {
+        stage('Do job stage') {
+            steps {
+                git branch: 'main', url: 'https://github.com/naturalett/continuous-integration.git'
+                sh 'ls -al'
+            }
         }
     }
     post {
         success {
             script {
                 try {
-                    load "$JENKINS_HOME/env-file.groovy"
+                    load "/var/workshop-creds/env-file.groovy"
                     Twilio.init(env.accountSid, env.authToken)
                     Message message = Message.creator(
                             new com.twilio.type.PhoneNumber(env.phoneNumber),
@@ -32,7 +40,7 @@ pipeline {
         failure {
             script {
                 try {
-                    load "$JENKINS_HOME/env-file.groovy"
+                    load "/var/workshop-creds/env-file.groovy"
                     Twilio.init(env.accountSid, env.authToken)
                     Message message = Message.creator(
                             new com.twilio.type.PhoneNumber(env.phoneNumber),
