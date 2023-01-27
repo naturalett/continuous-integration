@@ -13,6 +13,7 @@ pipeline {
             args '-v /var/run/docker.sock:/var/run/docker.sock -v /var/workshop-creds:/home'
         }
     }
+    sandbox(sandbox = true)
     parameters {
         string defaultValue: 'main', description: 'Feature Branch', name: 'branch'
     }
@@ -47,24 +48,20 @@ pipeline {
         stage('Test') {
             steps {
                 script {
-                    dir(applicationDir) {
-                        docker.image('python:3.7-slim').inside {
-                            sh """#!/bin/bash
-                            python3 -m venv venv
-                            source venv/bin/activate
-                            pip install -r requirements.txt
-                            pytest test_*.py -v --junitxml='test-results.xml'"""
-                        }
+                    customImage.inside {
+                        sh """#!/bin/bash
+                        python3 -m venv venv
+                        source venv/bin/activate
+                        pip install -r requirements.txt
+                        pytest test_*.py -v --junitxml='test-results.xml'"""
                     }
                 }
             }
         }
         stage('Display Results') {
             steps {
-                dir(applicationDir) {
-                    echo 'Displaying Results...'
-                    junit allowEmptyResults: true, testResults: 'test*.xml'
-                }
+                echo 'Displaying Results...'
+                junit allowEmptyResults: true, testResults: 'test*.xml'
             }
         }
         stage('Artifact') {

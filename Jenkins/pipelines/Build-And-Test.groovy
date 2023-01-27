@@ -1,5 +1,5 @@
 import groovy.transform.Field
-@Field String applicationDir = "Application", dockerHubOwner = "naturalett"
+@Field String customImage, applicationDir = "Application", dockerHubOwner = "naturalett"
 
 pipeline {
     agent {
@@ -16,18 +16,6 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/naturalett/continuous-integration.git'
             }
         }
-        stage('Initialization') {
-            steps {
-                script {
-                    docker.image('alpine').inside {
-                        sh """
-                        apk add curl
-                        curl http://checkip.amazonaws.com > publicIP""".trim()
-                    }
-                    publicIP = readFile('publicIP').trim()
-                }
-            }
-        }
         stage('Build') {
             steps {
                 script {
@@ -40,14 +28,12 @@ pipeline {
         stage('Test') {
             steps {
                 script {
-                    dir(applicationDir) {
-                        docker.image('python:3.7-slim').inside {
-                            sh """#!/bin/bash
-                            python3 -m venv venv
-                            source venv/bin/activate
-                            pip install -r requirements.txt
-                            pytest test_*.py -v --junitxml='test-results.xml'"""
-                        }
+                    customImage.inside {
+                        sh """#!/bin/bash
+                        python3 -m venv venv
+                        source venv/bin/activate
+                        pip install -r requirements.txt
+                        pytest test_*.py -v --junitxml='test-results.xml'"""
                     }
                 }
             }

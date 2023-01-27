@@ -15,27 +15,32 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/naturalett/continuous-integration.git'
             }
         }
-        stage('Test') {
+        stage('Build') {
             steps {
                 script {
                     dir(applicationDir) {
-                        docker.image('python:3.7-slim').inside {
-                            sh """#!/bin/bash
-                            python3 -m venv venv
-                            source venv/bin/activate
-                            pip install -r requirements.txt
-                            pytest test_*.py -v --junitxml='test-results.xml'"""
-                        }
+                        customImage = docker.build("${dockerHubOwner}/hello-world:${env.BUILD_ID}")
+                    }
+                }
+            }
+        }
+        stage('Test') {
+            steps {
+                script {
+                    customImage.inside {
+                        sh """#!/bin/bash
+                        python3 -m venv venv
+                        source venv/bin/activate
+                        pip install -r requirements.txt
+                        pytest test_*.py -v --junitxml='test-results.xml'"""
                     }
                 }
             }
         }
         stage('Display Results') {
             steps {
-                dir(applicationDir) {
-                    echo 'Displaying Results...'
-                    junit allowEmptyResults: true, testResults: 'test-results.xml'
-                }
+                echo 'Displaying Results...'
+                junit allowEmptyResults: true, testResults: 'test-results.xml'
             }
         }
     }

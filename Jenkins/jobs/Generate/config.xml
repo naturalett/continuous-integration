@@ -10,6 +10,7 @@ import hudson.plugins.git.*;
 import jenkins.model.Jenkins
 import hudson.model.ListView
 import groovy.json.JsonSlurper
+import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition
 
 parent = Jenkins.instance
 def sharedLibrariesUrl = &quot;https://github.com/naturalett/continuous-integration.git&quot;
@@ -39,9 +40,23 @@ for (projectName in projectNames) {
     myJob = hudson.model.Hudson.instance.getJob(projectName)
     println(&quot;${projectName} is being created&quot;)
     job = new org.jenkinsci.plugins.workflow.job.WorkflowJob(parent, projectName)
-    job.definition = flowDefinition
+
+    if (projectName in [&quot;Full-Pipeline&quot;, &quot;Monitoring&quot;]) {
+        job.definition = new CpsFlowDefinition(
+          &quot;&quot;&quot;
+node {
+      git branch: &apos;main&apos;, url: &apos;https://github.com/naturalett/continuous-integration.git&apos;
+      load &apos;./Jenkins/pipelines/${projectName}.groovy&apos;
+}
+          &quot;&quot;&quot;
+    )
+    } else {
+        job.definition = flowDefinition
+    }
     parent.reload()
-}</script>
+}
+
+</script>
     <sandbox>false</sandbox>
   </definition>
   <triggers/>
