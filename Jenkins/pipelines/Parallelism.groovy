@@ -1,6 +1,6 @@
 import groovy.transform.Field
 @Field Map parallel_deploys = [: ]
-@Field String customImage, applicationDir = "Application"
+@Field String customImage, applicationDir = "Application", dockerHubOwner = "naturalett"
 
 pipeline {
     agent {
@@ -15,7 +15,6 @@ pipeline {
     stages {
         stage('Clone') {
             steps {
-                deleteDir()
                 git branch: params.branch, url: 'https://github.com/naturalett/continuous-integration.git'
             }
         }
@@ -37,11 +36,13 @@ pipeline {
                                 stage("Running ${test_path}") {
                                     customImage.inside {
                                         sh """#!/bin/bash
-                                        python3 -m venv venv
-                                        source venv/bin/activate
-                                        pip install -r requirements.txt
+                                        cd /app
                                         pytest ${test_path}.py -v --junitxml='${test_path}.xml'"""
+                                        test_result = sh (
+                                            script:  "cat /app/${test_path}.xml",
+                                            returnStdout: true).trim()
                                     }
+                                    writeFile file: "${test_path}.xml", text: test_result
                                 }
                             }
                     }
@@ -53,6 +54,13 @@ pipeline {
             steps {
                 echo 'Displaying Results...'
                 junit allowEmptyResults: true, testResults: 'test*.xml'
+            }
+        }
+    }
+    post {
+        always {
+            script {
+                deleteDir()
             }
         }
     }

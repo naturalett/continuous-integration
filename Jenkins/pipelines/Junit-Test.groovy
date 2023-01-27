@@ -1,5 +1,5 @@
 import groovy.transform.Field
-@Field String customImage, applicationDir = "Application"
+@Field String customImage, applicationDir = "Application", dockerHubOwner = "naturalett"
 
 pipeline {
     agent {
@@ -11,7 +11,6 @@ pipeline {
     stages {
         stage('Clone') {
             steps {
-                deleteDir()
                 git branch: 'main', url: 'https://github.com/naturalett/continuous-integration.git'
             }
         }
@@ -29,11 +28,13 @@ pipeline {
                 script {
                     customImage.inside {
                         sh """#!/bin/bash
-                        python3 -m venv venv
-                        source venv/bin/activate
-                        pip install -r requirements.txt
+                        cd /app
                         pytest test_*.py -v --junitxml='test-results.xml'"""
+                        test_result = sh (
+                            script:  "cat /app/test-results.xml",
+                            returnStdout: true).trim()
                     }
+                    writeFile file: "test-results.xml", text: test_result
                 }
             }
         }
@@ -48,6 +49,11 @@ pipeline {
         success {
             script {
                 currentBuild.description = "Passed successfully!"
+            }
+        }
+        always {
+            script {
+                deleteDir()
             }
         }
     }
