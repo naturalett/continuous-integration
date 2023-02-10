@@ -5,6 +5,17 @@ docker build -t naturalett/jenkins:2.387-jdk11 .
 
 ### Configure and mount environment variables in the Jenkins container running on Docker for efficient and secure execution of builds
 
+#### Setup Twilio Credentials
+```bash
+# Establish an SMS notification system using Twilio to enhance communication and improve the efficiency of the environment
+mkdir -p ~/workshop-creds
+cat <<EOF >> ~/workshop-creds/env-file.groovy
+env.accountSid=''
+env.authToken=''
+env.SERVICE_SID=''
+env.phoneNumber=''
+EOF
+```
 
 #### Setup DockerHub Credentials
 ```bash
@@ -16,18 +27,6 @@ password=''
 docker login --username \$username --password \$password
 EOF
 chmod 0755 ~/workshop-creds/docker_login.sh
-```
-
-#### Setup Twilio Credentials
-```bash
-# Establish an SMS notification system using Twilio to enhance communication and improve the efficiency of the environment
-mkdir -p ~/workshop-creds
-cat <<EOF >> ~/workshop-creds/env-file.groovy
-env.accountSid=''
-env.authToken=''
-env.SERVICE_SID=''
-env.phoneNumber=''
-EOF
 ```
 
 ### Launch the Jenkins container on Docker for efficient automation of software builds
