@@ -1,5 +1,5 @@
 import groovy.transform.Field
-@Field String applicationDir = "Application", dockerHubOwner = "naturalett"
+@Field String applicationDir = "Application"
 
 pipeline {
     agent {
@@ -20,6 +20,7 @@ pipeline {
         stage('Initialization') {
             steps {
                 script {
+                    load "/var/workshop-creds/env-file.groovy"
                     docker.image('alpine').inside {
                         sh """
                         apk add curl
@@ -33,7 +34,7 @@ pipeline {
             steps {
                 script {
                     dir(applicationDir) {
-                        customImage = docker.build("${dockerHubOwner}/hello-world:${env.BUILD_ID}")
+                        customImage = docker.build("${env.dockerHubOwner}/hello-world:${env.BUILD_ID}")
                     }
                 }
             }

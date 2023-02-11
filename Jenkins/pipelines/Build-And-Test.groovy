@@ -14,11 +14,18 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/naturalett/continuous-integration.git'
             }
         }
+        stage('Initialization') {
+            steps {
+                script {
+                    load "/var/workshop-creds/env-file.groovy"
+                }
+            }
+        }
         stage('Build') {
             steps {
                 script {
                     dir(applicationDir) {
-                        customImage = docker.build("${dockerHubOwner}/hello-world:${env.BUILD_ID}")
+                        customImage = docker.build("${env.dockerHubOwner}/hello-world:${env.BUILD_ID}")
                     }
                 }
             }

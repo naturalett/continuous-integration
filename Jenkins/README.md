@@ -14,6 +14,7 @@ env.accountSid=''
 env.authToken=''
 env.SERVICE_SID=''
 env.phoneNumber=''
+env.dockerHubOwner=''
 EOF
 ```
 
