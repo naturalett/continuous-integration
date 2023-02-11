@@ -14,7 +14,6 @@ env.accountSid=''
 env.authToken=''
 env.SERVICE_SID=''
 env.phoneNumber=''
-env.dockerHubOwner=''
 EOF
 ```
 
@@ -28,6 +27,11 @@ password=''
 docker login --username $username --password $password
 EOF
 chmod 0755 ~/workshop-creds/docker_login.sh
+```
+
+#### Expand the env variables
+```bash
+echo "env.dockerHubOwner='<Your-DockerHub>'" >> ~/workshop-creds/env-file.groovy
 ```
 
 ### Launch the Jenkins container on Docker for efficient automation of software builds
