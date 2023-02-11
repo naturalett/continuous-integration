@@ -1,5 +1,5 @@
 import groovy.transform.Field
-@Field String customImage, applicationDir = "Application", dockerHubOwner = "naturalett"
+@Field String customImage, applicationDir = "Application"
 
 pipeline {
     agent {
