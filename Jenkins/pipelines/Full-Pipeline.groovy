@@ -3,7 +3,7 @@ import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
 import groovy.transform.Field
-@Field String customImage, publicIP, applicationDir = "Application", dockerHubOwner = "naturalett"
+@Field String customImage, publicIP, applicationDir = "Application"
 @Field Map parallel_deploys = [: ]
 
 pipeline {
@@ -26,6 +26,7 @@ pipeline {
         stage('Initialization') {
             steps {
                 script {
+                    load "/var/workshop-creds/env-file.groovy"
                     docker.image('alpine').inside {
                         sh """
                         apk add curl
@@ -39,7 +40,7 @@ pipeline {
             steps {
                 script {
                     dir(applicationDir) {
-                        customImage = docker.build("${dockerHubOwner}/hello-world:${env.BUILD_ID}")
+                        customImage = docker.build("${env.dockerHubOwner}/hello-world:${env.BUILD_ID}")
                     }
                 }
             }
@@ -91,7 +92,6 @@ pipeline {
         success {
             script {
                 try {
-                    load "/var/workshop-creds/env-file.groovy"
                     Twilio.init(env.accountSid, env.authToken)
                     Message message = Message.creator(
                             new com.twilio.type.PhoneNumber(env.phoneNumber),
@@ -108,7 +108,6 @@ pipeline {
         failure {
             script {
                 try {
-                    load "/var/workshop-creds/env-file.groovy"
                     Twilio.init(env.accountSid, env.authToken)
                     Message message = Message.creator(
                             new com.twilio.type.PhoneNumber(env.phoneNumber),

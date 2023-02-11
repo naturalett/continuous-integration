@@ -24,7 +24,7 @@ cat <<EOF >> ~/workshop-creds/docker_login.sh
 #!/bin/bash
 username=''
 password=''
-docker login --username \$username --password \$password
+docker login --username $username --password $password
 EOF
 chmod 0755 ~/workshop-creds/docker_login.sh
 ```

@@ -14,6 +14,7 @@ pipeline {
     stages {
         stage('Do job stage') {
             steps {
+                load "/var/workshop-creds/env-file.groovy"
                 git branch: 'main', url: 'https://github.com/naturalett/continuous-integration.git'
             }
         }
@@ -22,7 +23,6 @@ pipeline {
         success {
             script {
                 try {
-                    load "/var/workshop-creds/env-file.groovy"
                     Twilio.init(env.accountSid, env.authToken)
                     Message message = Message.creator(
                             new com.twilio.type.PhoneNumber(env.phoneNumber),
@@ -39,7 +39,6 @@ pipeline {
         failure {
             script {
                 try {
-                    load "/var/workshop-creds/env-file.groovy"
                     Twilio.init(env.accountSid, env.authToken)
                     Message message = Message.creator(
                             new com.twilio.type.PhoneNumber(env.phoneNumber),
