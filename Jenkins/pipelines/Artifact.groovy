@@ -11,8 +11,6 @@ pipeline {
     stages {
         stage('Clone') {
             steps {
-                deleteDir()
-
                 git branch: 'main', url: 'https://github.com/naturalett/continuous-integration.git'
             }
         }
@@ -39,6 +37,7 @@ pipeline {
         success {
             script {
                 currentBuild.description = "Passed successfully!"
+                deleteDir()
             }
         }
     }

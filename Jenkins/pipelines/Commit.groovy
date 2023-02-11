@@ -14,7 +14,6 @@ pipeline {
     stages {
         stage('Clone') {
             steps {
-                deleteDir()
                 git branch: params.branch, url: 'https://github.com/naturalett/continuous-integration.git'
             }
         }
@@ -66,6 +65,7 @@ pipeline {
         stage('CleanUp') {
             steps {
                 sh "docker stop python-hello-world-${env.BUILD_ID} && docker rm python-hello-world-${env.BUILD_ID}"
+                deleteDir()
             }
         }
     }
