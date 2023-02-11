@@ -25,6 +25,7 @@ pipeline {
             steps {
                 script {
                     dir(applicationDir) {
+                        // https://github.com/naturalett/continuous-integration/tree/main/Application
                         customImage = docker.build("${env.dockerHubOwner}/hello-world:${env.BUILD_ID}")
                     }
                 }
