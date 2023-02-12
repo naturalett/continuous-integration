@@ -13,7 +13,6 @@ pipeline {
             args '-v /var/run/docker.sock:/var/run/docker.sock -v /var/workshop-creds:/home'
         }
     }
-    sandbox(sandbox = true)
     parameters {
         string defaultValue: 'main', description: 'Feature Branch', name: 'branch'
     }
