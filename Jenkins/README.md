@@ -34,6 +34,11 @@ chmod 0755 ~/workshop-creds/docker_login.sh
 echo "env.dockerHubOwner='<Your-DockerHub>'" >> ~/workshop-creds/env-file.groovy
 ```
 
+#### Expand the env variables with Twilio WhatsApp
+```bash
+echo "env.whatsAppTwilio='<Your-Twilio-WhatsApp-Number>'" >> ~/workshop-creds/env-file.groovy
+```
+
 ### Launch the Jenkins container on Docker for efficient automation of software builds
 ```bash
 docker run -d \
