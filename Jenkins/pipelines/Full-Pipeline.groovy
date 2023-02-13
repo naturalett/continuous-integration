@@ -4,7 +4,6 @@ import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
 import groovy.transform.Field
 @Field String customImage, publicIP, applicationDir = "Application"
-@Field Map parallel_deploys = [: ]
 
 pipeline {
     agent {

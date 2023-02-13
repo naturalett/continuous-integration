@@ -26,7 +26,7 @@ pipeline {
                     Twilio.init(env.accountSid, env.authToken)
                     Message message = Message.creator(
                             new com.twilio.type.PhoneNumber("whatsapp:${env.phoneNumber}"),
-                            new com.twilio.type.PhoneNumber("whatsapp:${env.whatsAppTwilio}"),                            
+                            new com.twilio.type.PhoneNumber("whatsapp:${env.whatsAppTwilio}"),
                             "Your Pipeline: ${env.JOB_NAME}, Number: ${env.BUILD_NUMBER} passed successfully")
                         .create();
                     echo message.getSid()
@@ -42,7 +42,7 @@ pipeline {
                     Twilio.init(env.accountSid, env.authToken)
                     Message message = Message.creator(
                             new com.twilio.type.PhoneNumber("whatsapp:${env.phoneNumber}"),
-                            new com.twilio.type.PhoneNumber("whatsapp:${env.whatsAppTwilio}"),                            
+                            new com.twilio.type.PhoneNumber("whatsapp:${env.whatsAppTwilio}"),
                             "Your Pipeline: ${env.JOB_NAME}, Number: ${env.BUILD_NUMBER} failed")
                         .create();
                     echo message.getSid()
