@@ -8,10 +8,13 @@ pipeline {
             args '-v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
+    parameters {
+        string defaultValue: 'main', description: 'Feature Branch', name: 'branch'
+    }
     stages {
         stage('Clone') {
             steps {
-                git branch: 'main', url: 'https://github.com/naturalett/continuous-integration.git'
+                git branch: params.branch , url: 'https://github.com/naturalett/continuous-integration.git'
             }
         }
         stage('Initialization') {

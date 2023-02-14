@@ -3,8 +3,19 @@
   <actions/>
   <description></description>
   <keepDependencies>false</keepDependencies>
-  <properties/>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3606.v0b_d8b_e512dcf">
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>repository</name>
+          <description>Configure your repository pipelines</description>
+          <defaultValue>https://github.com/naturalett/continuous-integration.git</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3618.v13db_a_21f0fcf">
     <script>// imports
 import hudson.plugins.git.*;
 import jenkins.model.Jenkins
@@ -12,11 +23,17 @@ import hudson.model.ListView
 import groovy.json.JsonSlurper
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition
 
-parent = Jenkins.instance
-def sharedLibrariesUrl = &quot;https://github.com/naturalett/continuous-integration.git&quot;
+properties([
+    parameters([
+        string(defaultValue: &apos;https://github.com/naturalett/continuous-integration.git&apos;, description: &apos;Configure your repository pipelines&apos;, name: &apos;repository&apos;)
+    ])
+])
 
-scm = new GitSCM(sharedLibrariesUrl)
-scm.userRemoteConfigs = scm.createRepoList(sharedLibrariesUrl, null)
+parent = Jenkins.instance
+// def sharedLibrariesUrl = &quot;https://github.com/naturalett/continuous-integration.git&quot;
+
+scm = new GitSCM(params.repository)
+scm.userRemoteConfigs = scm.createRepoList(params.repository, null)
 scm.branches = [new BranchSpec(&quot;*/main&quot;)];
 
 def projectNames = [
@@ -28,7 +45,8 @@ def projectNames = [
     &quot;Deployment&quot;,
     &quot;Full-Pipeline&quot;,
     &quot;Junit-Test&quot;,
-    &quot;Monitoring&quot;,
+    &quot;Monitoring-Phone&quot;,
+    &quot;Monitoring-WhatsApp&quot;,
     &quot;Parallelism&quot;,
     &quot;VCS-Any-Agent&quot;,
     &quot;VCS-Docker-Agent&quot;,
@@ -41,11 +59,11 @@ for (projectName in projectNames) {
     println(&quot;${projectName} is being created&quot;)
     job = new org.jenkinsci.plugins.workflow.job.WorkflowJob(parent, projectName)
 
-    if (projectName in [&quot;Full-Pipeline&quot;, &quot;Monitoring&quot;]) {
+    if (projectName in [&quot;Full-Pipeline&quot;, &quot;Monitoring-Phone&quot;, &quot;Monitoring-WhatsApp&quot;]) {
         job.definition = new CpsFlowDefinition(
           &quot;&quot;&quot;
 node {
-      git branch: &apos;main&apos;, url: &apos;https://github.com/naturalett/continuous-integration.git&apos;
+      git branch: &apos;main&apos;, url: &apos;${params.repository}&apos;
       load &apos;./Jenkins/pipelines/${projectName}.groovy&apos;
 }
           &quot;&quot;&quot;
